@@ -4,7 +4,7 @@ Automatic version of sds_ver. Checks every started executable not belonging to r
 It preloads execv syscall for gnome-terminal copy. To change ternimal replace gnome-terminal with yours in sds_ver file.
 
 ## Installation
-`make
+`make  
 make install`
 
 ## Uninstall
