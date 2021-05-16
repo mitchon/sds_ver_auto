@@ -25,7 +25,7 @@ char GetParams (char* path, mpz_t p, mpz_t a, mpz_t b, mpz_t m, mpz_t q, mpz_t x
 	FILE* params;
 	if ((params = fopen(path, "r")) == NULL)
 	{
-		printf("Error. File \"ds_params.sdsp\" not found. Generate or import parameters file\n");
+		printf("Error. File \"ds_params\" not found. Generate or import parameters file\n");
 		return -1;
 	}
 	mpz_inp_str (p, params, 16);
@@ -50,9 +50,9 @@ int GetUserKeys (mpz_t xQ, mpz_t yQ, int iteration, char* login)
 {
 	FILE *keys;
 	char buffer[256];
-	if ((keys = fopen("/usr/local/etc/sds_ver/public_accounts", "rb")) == NULL)
+	if ((keys = fopen("/usr/local/etc/sds/public_accounts", "rb")) == NULL)
 	{
-		printf("Error reading accounts info");
+		printf("Error reading accounts info\n");
 		return -1;
 	}
 	if (feof(keys) == 0)
@@ -240,7 +240,7 @@ int Verifier(const char *file)
 	//статус открытого файла
 	char parfstatus = 0;
 	//получение параметров из файла
-	parfstatus += GetParams("/usr/local/etc/sds_ver/ds_params", p, a, b, m, q, xP, yP);
+	parfstatus += GetParams("/usr/local/etc/sds/ds_params", p, a, b, m, q, xP, yP);
 	if (parfstatus == 0)
 	{
 		FILE *target;
@@ -251,9 +251,12 @@ int Verifier(const char *file)
 			Clear_GMP(p, a, b, m, q, xP, yP, xQ, yQ);
 			return -1;
 		}
-		//генерация подписи, добавление к файлу
-		result += CheckDS(p, a, b, m, q, xP, yP, xQ, yQ, target);
-		fclose(target);
+		else
+		{
+			//генерация подписи, добавление к файлу
+			result += CheckDS(p, a, b, m, q, xP, yP, xQ, yQ, target);
+			fclose(target);
+		}
 	}
 	//если параметры не получены
 	else

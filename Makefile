@@ -22,12 +22,12 @@ clean:
 
 install:
 	install ./libsds_ver.so /usr/local/lib
-	install ./sds_ver /usr/local/bin
-	install -d /usr/local/etc/sds_ver
-	install ./ds_params /usr/local/etc/sds_ver
-	install ./public_accounts /usr/local/etc/sds_ver
+	install ./sds_ver_auto /usr/local/bin
+	install -d /usr/local/etc/sds
+	install ./ds_params /usr/local/etc/sds
+	install ./public_accounts /usr/local/etc/sds
 
 uninstall:
-	rm -rf /usr/local/etc/sds_ver
-	rm -rf /usr/local/bin/sds_ver
+	rm -rf /usr/local/etc/sds
+	rm -rf /usr/local/bin/sds_ver_auto
 	rm -rf /usr/local/lib/libsds_ver.so
