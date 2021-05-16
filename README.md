@@ -15,7 +15,7 @@ Tested in Ubuntu 20.04 LTS
 <code>make uninstall</code>
 
 ## Start
-To start a program use <code>sds_ver</code>. This executable is stored in `/usr/local/bin`. Executing it opens a terminal copy.
+To start a program use <code>sds_ver\_auto</code>. This executable is stored in `/usr/local/bin`. Executing it opens a terminal copy.
 
 ## Configuration files
 Configs are in `/usr/local/etc/sds_ver`  
