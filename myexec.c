@@ -39,6 +39,7 @@ int execve(const char *filename, char *const argv[], char *const envp[])
 
             }
         }
+		fclose(fp);
     }
     return ((orig_execve)dlsym(RTLD_NEXT, "execve"))(filename, argv, envp);
 }

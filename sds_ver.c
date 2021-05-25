@@ -43,7 +43,13 @@ char GetParams (char* path, mpz_t p, mpz_t a, mpz_t b, mpz_t m, mpz_t q, mpz_t x
 			"xP = %Zx\n"
 			"yP = %Zx\n", p, a, b, m, q, xP, yP);
 	fclose(params);
-	return 0;
+	if (mpz_cmp_si(p, 0) > 0 && mpz_cmp_si(a, 0) > 0 && mpz_cmp_si(b, 0) > 0 && mpz_cmp_si(m, 0) > 0 && mpz_cmp_si(q, 0) > 0 && mpz_cmp_si(xP, 0) > 0 && mpz_cmp_si(yP, 0) > 0)
+		return 0;
+	else
+	{
+		printf("Error. Parameters are incompatible\n");
+		return -1;
+	}
 }
 
 int GetUserKeys (mpz_t xQ, mpz_t yQ, int iteration, char* login)
@@ -89,7 +95,13 @@ int GetUserKeys (mpz_t xQ, mpz_t yQ, int iteration, char* login)
 	gmp_printf("xQ = %Zx\n"
 			"yQ = %Zx\n", xQ, yQ);
 	fclose(keys);
-	return 0;
+	if (mpz_cmp_si(xQ, 0) > 0 && mpz_cmp_si(yQ, 0) > 0)
+		return 0;
+	else 
+	{
+		printf("Public accounts file is corrupted\n");
+		return -1;
+	}
 }
 
 unsigned char *GenerateHashFromFile(FILE *file)
@@ -180,6 +192,20 @@ int CheckDS(mpz_t p, mpz_t a, mpz_t b, mpz_t m, mpz_t q, mpz_t xP, mpz_t yP, mpz
 		keysfstat = GetUserKeys(xQ, yQ, it, login);
 		if (keysfstat != 0)
 		{
+			mpz_clear(e);
+			mpz_clear(alpha);
+			mpz_clear(nu);
+			mpz_clear(s);
+			mpz_clear(r);
+			mpz_clear(z1);
+			mpz_clear(z2);
+			mpz_clear(xC);
+			mpz_clear(yC);
+			mpz_clear(xC1);
+			mpz_clear(yC1);
+			mpz_clear(xC2);
+			mpz_clear(yC2);
+			mpz_clear(R);
 			return -1;
 		}
 		it++;
@@ -215,12 +241,7 @@ int CheckDS(mpz_t p, mpz_t a, mpz_t b, mpz_t m, mpz_t q, mpz_t xP, mpz_t yP, mpz
 	mpz_clear(yC2);
 	mpz_clear(R);
 	free(h);
-	if (result == 0)
-	{
-		printf("No result!\n");
-		return -1;
-	}
-		return 0;
+	return 0;
 
 }
 
@@ -253,14 +274,29 @@ int Verifier(const char *file)
 		}
 		else
 		{
-			//генерация подписи, добавление к файлу
-			result += CheckDS(p, a, b, m, q, xP, yP, xQ, yQ, target);
-			fclose(target);
+			
+			fseek(target, 0, SEEK_END);
+			long fsize = ftell(target);
+			fseek(target, 0, SEEK_SET);
+			if (fsize == 0)
+			{
+				printf("Empty file\n");
+				Clear_GMP(p, a, b, m, q, xP, yP, xQ, yQ);
+				return -1;
+			}
+			else
+			{
+				//генерация подписи, добавление к файлу
+				result += CheckDS(p, a, b, m, q, xP, yP, xQ, yQ, target);
+			}
 		}
 	}
 	//если параметры не получены
 	else
-		printf("Get the parameters first!");
+	{
+		printf("Get the parameters first!\n");
+		return -1;
+	}
 	//очистить все переменные, используемые gmp
 	Clear_GMP(p, a, b, m, q, xP, yP, xQ, yQ);
 	return result;
